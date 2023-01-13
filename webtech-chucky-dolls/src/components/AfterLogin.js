@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 
-function AfterLogin ()
+function AfterLogin ({userName, userId})
 {
     const [teams, setTeams] = useState("");
     const SERVER = 'http://localhost:8080'
@@ -21,6 +21,14 @@ function AfterLogin ()
         const data = await response.json()
         setTeams(data)
         
+      }
+
+      async function setTeamUser(username)
+      {
+        const requestOptions = {method: 'PUT'}
+        const response = await fetch(`${SERVER}/admin/users/:${username}`,requestOptions)
+        const data = await response.json()
+        setTeams(data)
       }
 
 
@@ -68,6 +76,9 @@ function AfterLogin ()
                 errorTeamDiv.innerHTML=''
                 
                 console.log(teamSelected + " cu id: " + teamSelectedId)
+                console.log("Esti logat cu contul: " + userName + " cu id-ul: " + userId)
+
+
             }
     }
 
