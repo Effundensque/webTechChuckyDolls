@@ -7,6 +7,7 @@ import AfterLogin from './AfterLogin';
 function App() {
   const [token, setToken] = useState('')
   const [user_name, setUser_Name] = useState('')
+  const [user_id, setUser_ID] = useState(1)
   const dispatch = useDispatch()
   const SERVER = 'http://localhost:8080'
   
@@ -17,9 +18,15 @@ function App() {
       "auth": token
     }
     }
+    const response1 = await fetch(`${SERVER}/api/whologgedinID`,requestOptions)
+    const data1 = await response1.json()
     const response = await fetch(`${SERVER}/api/whologgedin`,requestOptions)
     const data = await response.json()
+    
+    console.log(data)
+    console.log(data1)
     setUser_Name(data.message)
+    setUser_ID(data1.message)
     
   }
 
@@ -28,7 +35,7 @@ function App() {
   },[token])
 
   useEffect(()=>{
-    console.log(user_name)
+    console.log( "User: " + user_name)
   },[user_name])
 
 
@@ -36,7 +43,7 @@ function App() {
 
   if (token!=='')
   {
-    return (<AfterLogin />)
+    return (<AfterLogin userName={user_name} userId={user_id}/>)
 
   }
   else

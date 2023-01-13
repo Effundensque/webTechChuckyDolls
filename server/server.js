@@ -286,4 +286,22 @@ apiRouter.get('/whologgedin',async (req,res) => {
   
 })
 
+apiRouter.get('/whologgedinID',async (req,res) => {
+  const token = req.headers.auth
+  const user = await User.findOne({
+    where: {
+      token: token
+    }
+  })
+  if (user)
+  {
+    res.status(201).json({message:user.id})
+  }
+  else
+  {
+    res.status(401).json({message: 'not logged in'})
+  }
+  
+})
+
 app.listen(8080)
