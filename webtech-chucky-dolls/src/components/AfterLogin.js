@@ -1,16 +1,43 @@
 import { useState, useEffect } from "react"
+import HaveTeam from "./HaveTeam";
 
-function AfterLogin ({userName, userId})
+function AfterLogin ({token, userName, userId})
 {
     const [teams, setTeams] = useState("");
     const SERVER = 'http://localhost:8080'
     const [teamSelected, setTeamSelected] = useState('')
     const [createTeamName, setCreateTeamName] = useState('')
     const [createTeamId, setCreateTeamId] = useState('')
-
+    const [iHaveTeam, setIhaveTeam] = useState('')
+ 
     useEffect(()=>{
         getTeams();
       },[1])
+
+    async function getTeamIdLoggedInUser()
+    {
+        const requestOptions = {method: 'GET',
+        headers:
+        {
+          "auth": token
+        }
+        }
+        
+        const response1 = await fetch(`${SERVER}/api/whologgedinIDTeam`,requestOptions)
+    const data1 = await response1.json()
+   
+    console.log("Am echipa? " + data1.message)
+        if (data1.message)
+        {
+            setIhaveTeam(data1.message)
+        }
+    }
+
+    useEffect(()=>{
+        getTeamIdLoggedInUser()
+    },[2])
+
+    
 
     useEffect(()=>{
         displayTeams();
@@ -138,27 +165,37 @@ function AfterLogin ({userName, userId})
             }
     }
 
-    return(
-        <div>
-            <div>Teams: <br></br></div>
-            <div id = 'displTeamsDiv'></div>
-
-            <br></br>
+    if (iHaveTeam!=='')
+    {
+        return(
+            <HaveTeam teamid={iHaveTeam}/>
+        )
+        
+    }else
+    {
+        return(
             <div>
-                <div id='selectTeamDiv'>
-                Choose your team: <div id='errorTeam'></div> <br></br> 
-                <input type='text' placeholder='type the name of the team' onChange={(evt) => setTeamSelected(evt.target.value)} />
-                <input type='button' value='Select Team' onClick={() => selectTeam(teamSelected)} />
-                </div>
+                <div>Teams: <br></br></div>
+                <div id = 'displTeamsDiv'></div>
+    
                 <br></br>
-                <div id='createTeamDiv'>
-                Create a new team:<div id='errorTeamExists'></div> <br></br>
-                <input type='text' placeholder='type the name of the team' onChange={(evt) => setCreateTeamName(evt.target.value)} />
-                <input type='button' value='Create' onClick={() => createTeam(createTeamName)} />
+                <div>
+                    <div id='selectTeamDiv'>
+                    Choose your team: <div id='errorTeam'></div> <br></br> 
+                    <input type='text' placeholder='type the name of the team' onChange={(evt) => setTeamSelected(evt.target.value)} />
+                    <input type='button' value='Select Team' onClick={() => selectTeam(teamSelected)} />
+                    </div>
+                    <br></br>
+                    <div id='createTeamDiv'>
+                    Create a new team:<div id='errorTeamExists'></div> <br></br>
+                    <input type='text' placeholder='type the name of the team' onChange={(evt) => setCreateTeamName(evt.target.value)} />
+                    <input type='button' value='Create' onClick={() => createTeam(createTeamName)} />
+                    </div>
                 </div>
             </div>
-        </div>
-    )
+        )
+    }
+    
 
 }
 

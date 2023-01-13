@@ -8,7 +8,6 @@ function App() {
   const [token, setToken] = useState('')
   const [user_name, setUser_Name] = useState('')
   const [user_id, setUser_ID] = useState(1)
-  const dispatch = useDispatch()
   const SERVER = 'http://localhost:8080'
   
   async function callApi(){
@@ -43,7 +42,7 @@ function App() {
 
   if (token!=='')
   {
-    return (<AfterLogin userName={user_name} userId={user_id}/>)
+    return (<AfterLogin token={token} userName={user_name} userId={user_id}/>)
 
   }
   else
