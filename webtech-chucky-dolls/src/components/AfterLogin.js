@@ -6,6 +6,7 @@ function AfterLogin ({userName, userId})
     const SERVER = 'http://localhost:8080'
     const [teamSelected, setTeamSelected] = useState('')
     const [createTeamName, setCreateTeamName] = useState('')
+    const [createTeamId, setCreateTeamId] = useState('')
 
     useEffect(()=>{
         getTeams();
@@ -15,20 +16,51 @@ function AfterLogin ({userName, userId})
         displayTeams();
       },[teams])
 
+    useEffect(()=>{
+        setTeamUser(userId, createTeamId)
+    },[createTeamId])
+
     async function getTeams(){
         const requestOptions = {method: 'GET'}
         const response = await fetch(`${SERVER}/admin/teams`,requestOptions)
         const data = await response.json()
         setTeams(data)
+        console.log("teams updated")
         
       }
 
-      async function setTeamUser(username)
+      async function setTeamUser(userid,teamid)
       {
-        const requestOptions = {method: 'PUT'}
-        const response = await fetch(`${SERVER}/admin/users/:${username}`,requestOptions)
+        const requestOptions = {method: 'PUT',
+        headers:{
+            "Content-Type": "application/json"
+        },
+    body: JSON.stringify({
+        teamId:teamid
+    })}
+    console.log(requestOptions)
+        const response = await fetch(`${SERVER}/admin/users/${userid}`,requestOptions)
         const data = await response.json()
-        setTeams(data)
+        console.log(data)
+      }
+
+
+
+      async function createDbTeam(teamname)
+      {
+        const requestOptions = {method: 'POST',
+        headers:{
+            "Content-Type": "application/json"
+        },
+    body: JSON.stringify({
+        teamName:teamname
+    })}
+    const response = await fetch(`${SERVER}/admin/teams`,requestOptions)
+        const data = await response.json()
+        console.log("LALALALLAL " + data)
+        setCreateTeamId(await data)
+        
+        
       }
 
 
@@ -47,9 +79,32 @@ function AfterLogin ({userName, userId})
         divTeams.innerHTML=someText
     }
 
-    function createTeam()
+    async function createTeam()
     {
         console.log(createTeamName);
+        let isTeam = false;
+        let teamSelectedId=-1;
+        Object.entries(teams).forEach(([key, value]) => {
+            if (value.teamName===createTeamName)
+            {
+                isTeam=true;
+                teamSelectedId=value.id;
+            }
+            
+
+        })
+        if (isTeam === true)
+        {
+            let errorTeamDiv= document.getElementById("errorTeamExists")
+            errorTeamDiv.style.color="red";
+            errorTeamDiv.innerHTML="Team already exists!"
+        }
+        else
+        {
+            
+            await createDbTeam(createTeamName)
+            await getTeams()
+        }
     }
     function selectTeam()
     {
@@ -77,6 +132,7 @@ function AfterLogin ({userName, userId})
                 
                 console.log(teamSelected + " cu id: " + teamSelectedId)
                 console.log("Esti logat cu contul: " + userName + " cu id-ul: " + userId)
+                setTeamUser(userId,teamSelectedId)
 
 
             }
@@ -96,7 +152,7 @@ function AfterLogin ({userName, userId})
                 </div>
                 <br></br>
                 <div id='createTeamDiv'>
-                Create a new team: <br></br>
+                Create a new team:<div id='errorTeamExists'></div> <br></br>
                 <input type='text' placeholder='type the name of the team' onChange={(evt) => setCreateTeamName(evt.target.value)} />
                 <input type='button' value='Create' onClick={() => createTeam(createTeamName)} />
                 </div>
