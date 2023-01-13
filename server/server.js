@@ -210,7 +210,7 @@ adminRouter.get('/sync', async (req, res, next) => {
   adminRouter.post('/teams', async (req, res, next) => {
     try {
       const team = await Team.create(req.body)
-      res.status(201).json(team)
+      res.status(201).json(team.id)
     } catch (err) {
       next(err)
     }
