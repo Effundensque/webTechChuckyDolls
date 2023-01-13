@@ -304,4 +304,51 @@ apiRouter.get('/whologgedinID',async (req,res) => {
   
 })
 
+apiRouter.get('/whologgedinIDTeam',async (req,res) => {
+  const token = req.headers.auth
+  const user = await User.findOne({
+    where: {
+      token: token
+    }
+  })
+  if (user)
+  {
+    res.status(201).json({message:user.teamId})
+  }
+  else
+  {
+    res.status(401).json({message: 'not logged in'})
+  }
+  
+})
+
+adminRouter.get('/teams/:teamId',async (req,res) => {
+  const team = await Team.findByPk(req.params.teamId)
+  
+  if (team)
+  {
+    res.status(201).json({message:team.teamName})
+  }
+  else
+  {
+    res.status(401).json({message: 'not logged in'})
+  }
+  
+})
+
+adminRouter.get('/projectsTeam', async (req, res, next) => {
+  try {
+    const teamId1 = req.headers.auth
+    console.warn("------------------------------------------------------------------" + req.headers.auth)
+    const projects = await Project.findAll({
+      where: {
+        teamId:teamId1
+      }
+    })
+    res.status(200).json(projects)
+  } catch (err) {
+    next(err)
+  }
+})
+
 app.listen(8080)
