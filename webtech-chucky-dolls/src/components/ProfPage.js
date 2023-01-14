@@ -22,15 +22,17 @@ function ProfPage()
     return(<div>
         {
             Object.entries(projects).map((e)=>(
-              <ul>
-              <li key={e[1].id}>
+              <ul className="list-group">
+              <li className="list-group-item" key={e[1].id}>
               {e[1].projectName } - Description: {e[1].description}
               <b> - Grade: {e[1].finalGrade} </b>
             </li>
               </ul>
-            
+              
               ))
           }
+              <input className="btn btn-dark" value="Logout" type="button" onClick={()=>{window.location.reload()}}></input>
+
         </div>)
 }
 

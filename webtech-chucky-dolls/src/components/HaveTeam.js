@@ -139,11 +139,14 @@ console.log(giveGrade)
           setGiveGrade(ggrade)
   
          let projEval=document.getElementById("proiectDeEvaluat");
-         projEval.innerHTML=`Vei avea de evaluat: <b>
-         ${Object.entries(data)[project-1][1].projectName}</b><br></br>
-         Description: <br></br>
-         ${Object.entries(data)[project-1][1].description}
-         <br></br>
+         projEval.innerHTML=`
+          
+         <div className="row">
+         Vei avea de evaluat: <b>${Object.entries(data)[project-1][1].projectName}</b>
+         </div>
+         <div className="row">
+         Description:  ${Object.entries(data)[project-1][1].description}
+         </div>
          `;
   
          let butonGrade=document.getElementById("butonGrade")
@@ -210,54 +213,57 @@ console.log(giveGrade)
 
 
     return (
-        <div> Bun venit! Faci parte din echipa <b>{teamPart}</b><br></br>
-        Proiectele echipei: <br></br>
+        <div>
+         
+        <p className="text-center">Bun venit! Faci parte din echipa <b>{teamPart}</b></p>
+        <input className="btn btn-dark mt-3" value="Logout" type="button" onClick={()=>{window.location.reload()}}></input>
 
-        <div id='proiects'>
-        </div>
-        {/* notes.map(e => (
-            <div key={e.id}>
-              {e.content}
-              <input type='button' value='delete' onClick={() => dispatch(deleteNote(e.id))} />
-            </div>
-          )) 
-          Object.entries(projects).forEach(([key, value]) => {
-            someText+=`<li>`
-             someText += value.projectName
-             if (value.description)
-             someText += " - " + value.description
-             if (value.finalGrade)
-             someText += " <b>Grade:</b> " + value.finalGrade
-             someText+=`</li>`
-
-        })
-          */}
+        <h5>Proiectele echipei: </h5>
           {
             Object.entries(projects).map((e)=>(
-              <ul>
-              <li key={e[1].id}>
+              <ul className="list-group">
+              <li className="list-group-item" key={e[1].id}>
               {e[1].projectName } - Description: {e[1].description}
-              <> </><input type='button' value='delete' onClick={() => deleteProject(e[1].id)} />
-              <b> - Grade: {e[1].finalGrade} </b>
+              
+              <b> - Grade: {e[1].finalGrade} 
+              </b> 
+              <> </><input className="btn btn-danger" type='button' value='delete' onClick={() => deleteProject(e[1].id)} />
             </li>
               </ul>
             
               ))
           }
-        <hr></hr>
-        <br></br>
-        <div>
-        <input type='text' placeholder='Name of the project' onChange={(evt) => setProjectName(evt.target.value)} />
-        <input type='text' placeholder='Project description' onChange={(evt) => setProjectDescription(evt.target.value)} />
-        <input type="button" value="Adauga Proiect" onClick={()=>addProject(projectName,projectDescription)} />
+        <div className="row mt-3">
+          <div className="col-4">
+          <input className="form-control" type='text' placeholder='Name of the project' onChange={(evt) => setProjectName(evt.target.value)} />
+          </div>
+          <div className="col-4">
+          <input className="form-control" type='text' placeholder='Project description' onChange={(evt) => setProjectDescription(evt.target.value)} />
+          </div>
+          <div className="col-3">
+          <input className="btn btn-primary" type="button" value="Adauga Proiect" onClick={()=>addProject(projectName,projectDescription)} />
+          </div>
         
         </div>
-       <br></br>
-        <input type="button" value="Verifica proiectul selectat pentru tine." onClick={()=>evaluateProject()} />
-        <div id='proiectDeEvaluat'></div>
-        <input  id='textGrade'  type='text' placeholder='Grade:' onChange={function (evt) {setGrade(evt.target.value)}} />
-        <input id='butonGrade' type="button" value="Give grade" onClick={function () {setDbGrade(grade,evaluatProjId,giveGrade)} } />
+          <div className="row mt-2">
+            <div className="col-2">
+            <input className="btn btn-dark" type="button" value="Verifica proiectul selectat pentru tine." onClick={()=>evaluateProject()} />
+            </div>
+          </div>
+
+        <div className="row">
+        <div className="col" id='proiectDeEvaluat'></div>
         </div>
+        <div className="row">
+          <div className="col-4">
+          <input className="form-control"  id='textGrade'  type='text' placeholder='Grade:' onChange={function (evt) {setGrade(evt.target.value)}} />
+          </div>
+          <div className="col-3"> 
+          <input className="btn btn-primary" id='butonGrade' type="button" value="Give grade" onClick={function () {setDbGrade(grade,evaluatProjId,giveGrade)} } />
+          </div>
+        </div>
+        
+         </div>
         
     )
 }
