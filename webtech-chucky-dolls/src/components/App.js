@@ -3,6 +3,7 @@ import { shallowEqual, useDispatch , useSelector } from 'react-redux';
 import '../style/App.css';
 import LoginForm from './LoginForm'
 import AfterLogin from './AfterLogin';
+import ProfPage from './ProfPage';
 
 function App() {
   const [token, setToken] = useState('')
@@ -45,7 +46,7 @@ function App() {
        
 if (user_role==="PROF")
 {
-return(<div>Sunt prof</div>)
+return(<ProfPage />)
 }else
 {
   if (token!=='')

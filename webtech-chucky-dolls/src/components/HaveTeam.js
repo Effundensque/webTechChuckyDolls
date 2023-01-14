@@ -236,8 +236,8 @@ console.log(giveGrade)
             Object.entries(projects).map((e)=>(
               <ul>
               <li key={e[1].id}>
-              {e[1].projectName }
-              <input type='button' value='delete' onClick={() => deleteProject(e[1].id)} />
+              {e[1].projectName } - Description: {e[1].description}
+              <> </><input type='button' value='delete' onClick={() => deleteProject(e[1].id)} />
               <b> - Grade: {e[1].finalGrade} </b>
             </li>
               </ul>
