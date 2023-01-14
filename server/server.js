@@ -171,6 +171,17 @@ adminRouter.get('/sync', async (req, res, next) => {
       next(err)
     }
   })
+
+  adminRouter.get('/userss', async (req, res, next) => {
+    try {
+      const users = await User.findAll({
+        attributes: ['username']
+      })
+      res.status(200).json(users)
+    } catch (err) {
+      next(err)
+    }
+  })
   
   adminRouter.post('/users', async (req, res, next) => {
     try {

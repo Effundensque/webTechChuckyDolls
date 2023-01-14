@@ -38,11 +38,12 @@ function App() {
   },[user_name])
 
 
-  
+  const [seed, setSeed] = useState(1);
+       
 
   if (token!=='')
   {
-    return (<AfterLogin token={token} userName={user_name} userId={user_id}/>)
+    return (<AfterLogin key={seed} setSeed={setSeed} token={token} userName={user_name} userId={user_id}/>)
 
   }
   else

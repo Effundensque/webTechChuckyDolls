@@ -61,7 +61,11 @@ console.log(giveGrade)
         let someText=`<ul>`;
         Object.entries(projects).forEach(([key, value]) => {
             someText+=`<li>`
-             someText += value.projectName + " - "+ value.description +" "+ value.finalGrade;
+             someText += value.projectName
+             if (value.description)
+             someText += " - " + value.description
+             if (value.finalGrade)
+             someText += " <b>Grade:</b> " + value.finalGrade
              someText+=`</li>`
 
         })
@@ -85,52 +89,66 @@ console.log(giveGrade)
         const requestOptions = {method: 'GET',headers:{auth:teamid}}
         const response = await fetch(`${SERVER}/admin/projectsTeamEvaluate`,requestOptions)
         const data = await response.json()
-        
+        console.log("Data: " + data + " type:" + data.type)
         console.log(Object.entries(await data).length)
+        if (Object.entries(await data).length<=0)
+        {
+          let projEval=document.getElementById("proiectDeEvaluat");
+          projEval.innerHTML="Nu exista proiect de evaluat"
+          let butonGrade=document.getElementById("butonGrade")
+         butonGrade.style.display='none'
+         let textGrade=document.getElementById("textGrade")
+         textGrade.style.display='none'
+        }else
+        {
+          console.log(Object.entries(await data).length)
 
-        const project = Math.floor(Math.random() * Object.entries(data).length) + 1;
-
-        console.log("cplm " + Object.entries(data))
-        console.log(Object.entries(data)[project-1][1].id)
-        console.log(Object.entries(data)[project-1][1].projectName)
-        console.log(Object.entries(data)[project-1][1].description) 
-        const projId=Object.entries(data)[project-1][1].id;
-        console.log("Proj id: " + projId)
-        setEvaluatProjId(projId)
-
-        const grade1=Object.entries(data)[project-1][1].grade1
-        const grade2=Object.entries(data)[project-1][1].grade2
-        const grade3=Object.entries(data)[project-1][1].grade3
-        const grade4=Object.entries(data)[project-1][1].grade4
-        const grade5=Object.entries(data)[project-1][1].grade5
-
-        console.log("Grades: " + grade1 +" "+ grade2 +" "+ grade3 +" "+ grade4 +" "+ grade5)
-        let ggrade=""
-        if (grade1==null)
-        ggrade="grade1"
-        else if (grade2==null)
-        ggrade="grade2"
-        else if (grade3==null)
-        ggrade="grade3"
-        else if (grade4==null)
-        ggrade="grade4"
-        else
-        ggrade="grade5"
-        console.log(ggrade)
-        setGiveGrade(ggrade)
-
-       let projEval=document.getElementById("proiectDeEvaluat");
-       projEval.innerHTML=`Vei avea de evaluat: <b>
-       ${Object.entries(data)[project-1][1].projectName}</b><br></br>
-       Description: <br></br>
-       ${Object.entries(data)[project-1][1].description}
-       <br></br>
-       `;
-
-       let butonGrade=document.getElementById("butonGrade")
-       butonGrade.style.display='block'
-       let textGrade=document.getElementById("textGrade")
-       textGrade.style.display='block'
+          const project = Math.floor(Math.random() * Object.entries(data).length) + 1;
+  
+          console.log("cplm " + Object.entries(data))
+          console.log(Object.entries(data)[project-1][1].id)
+          console.log(Object.entries(data)[project-1][1].projectName)
+          console.log(Object.entries(data)[project-1][1].description) 
+          const projId=Object.entries(data)[project-1][1].id;
+          console.log("Proj id: " + projId)
+          setEvaluatProjId(projId)
+  
+          const grade1=Object.entries(data)[project-1][1].grade1
+          const grade2=Object.entries(data)[project-1][1].grade2
+          const grade3=Object.entries(data)[project-1][1].grade3
+          const grade4=Object.entries(data)[project-1][1].grade4
+          const grade5=Object.entries(data)[project-1][1].grade5
+  
+          console.log("Grades: " + grade1 +" "+ grade2 +" "+ grade3 +" "+ grade4 +" "+ grade5)
+          let ggrade=""
+          if (grade1==null)
+          ggrade="grade1"
+          else if (grade2==null)
+          ggrade="grade2"
+          else if (grade3==null)
+          ggrade="grade3"
+          else if (grade4==null)
+          ggrade="grade4"
+          else
+          ggrade="grade5"
+          console.log(ggrade)
+          setGiveGrade(ggrade)
+  
+         let projEval=document.getElementById("proiectDeEvaluat");
+         projEval.innerHTML=`Vei avea de evaluat: <b>
+         ${Object.entries(data)[project-1][1].projectName}</b><br></br>
+         Description: <br></br>
+         ${Object.entries(data)[project-1][1].description}
+         <br></br>
+         `;
+  
+         let butonGrade=document.getElementById("butonGrade")
+         butonGrade.style.display='block'
+         let textGrade=document.getElementById("textGrade")
+         textGrade.style.display='block'
+        }
+        
+        
 
         
       }

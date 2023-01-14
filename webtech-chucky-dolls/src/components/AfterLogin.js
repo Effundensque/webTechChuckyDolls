@@ -1,8 +1,12 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, Component } from "react"
 import HaveTeam from "./HaveTeam";
 
-function AfterLogin ({token, userName, userId})
+
+function AfterLogin ({key,setSeed,token, userName, userId})
 {
+    const reset = () => {
+        setSeed(Math.random());
+    }
     const [teams, setTeams] = useState("");
     const SERVER = 'http://localhost:8080'
     const [teamSelected, setTeamSelected] = useState('')
@@ -10,6 +14,10 @@ function AfterLogin ({token, userName, userId})
     const [createTeamId, setCreateTeamId] = useState('')
     const [iHaveTeam, setIhaveTeam] = useState('')
  
+    function refreshPage() {
+         reset();
+      }
+
     useEffect(()=>{
         getTeams();
       },[1])
@@ -131,6 +139,7 @@ function AfterLogin ({token, userName, userId})
             
             await createDbTeam(createTeamName)
             await getTeams()
+            refreshPage();
         }
     }
     function selectTeam()
@@ -160,6 +169,7 @@ function AfterLogin ({token, userName, userId})
                 console.log(teamSelected + " cu id: " + teamSelectedId)
                 console.log("Esti logat cu contul: " + userName + " cu id-ul: " + userId)
                 setTeamUser(userId,teamSelectedId)
+                refreshPage();
 
 
             }
