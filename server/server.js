@@ -10,6 +10,7 @@ const sequelize = require('./db')
 const User = require('./models/users')
 const Team = require('./models/teams')
 const Project = require('./models/projects')
+const { Op } = require('sequelize')
 
 Team.hasMany(User)
 Team.hasMany(Project)
@@ -344,6 +345,25 @@ adminRouter.get('/projectsTeam', async (req, res, next) => {
       where: {
         teamId:teamId1
       }
+    })
+    res.status(200).json(projects)
+  } catch (err) {
+    next(err)
+  }
+})
+
+adminRouter.get('/projectsTeamEvaluate', async (req, res, next) => {
+  try {
+    const teamId1 = req.headers.auth
+    console.warn("------------------------------------------------------------------" + req.headers.auth)
+    const projects = await Project.findAll({
+      where: { 
+        teamId:{
+          [Op.not]:teamId1
+        }
+        
+      }
+      
     })
     res.status(200).json(projects)
   } catch (err) {

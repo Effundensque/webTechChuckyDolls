@@ -10,6 +10,7 @@ function HaveTeam({teamid})
 
     const [projectName, setProjectName] = useState('')
     const [projectDescription, setProjectDescription] = useState('')
+    const [grade, setGrade] = useState('')
 
     const SERVER = 'http://localhost:8080'
     var update=1;
@@ -26,6 +27,10 @@ function HaveTeam({teamid})
     useEffect(()=>{
         setTeamName();
         getProjects();
+        let butonGrade=document.getElementById("butonGrade")
+        butonGrade.style.display='none'
+        let textGrade=document.getElementById("textGrade")
+        textGrade.style.display='none'
        
     },[1])
     useEffect(()=>{
@@ -63,6 +68,33 @@ function HaveTeam({teamid})
         console.log(data)
         getProjects();
       }
+
+
+      async function evaluateProject()
+      {
+        const requestOptions = {method: 'GET',headers:{auth:teamid}}
+        const response = await fetch(`${SERVER}/admin/projectsTeamEvaluate`,requestOptions)
+        const data = await response.json()
+        console.log(data)
+       console.log(Object.entries(data).length)
+       const project = Math.floor(Math.random() * Object.entries(data).length) + 1;
+       console.log(Object.entries(data)[project-1][1].projectName)
+       console.log(Object.entries(data)[project-1][1].description)
+       let projEval=document.getElementById("proiectDeEvaluat");
+       
+       projEval.innerHTML=`Vei avea de evaluat: <br></br>
+       ${Object.entries(data)[project-1][1].projectName}
+       <br></br>
+       Description: <br></br>
+       ${Object.entries(data)[project-1][1].description}
+       <br></br>
+       
+       `;
+       let butonGrade=document.getElementById("butonGrade")
+       butonGrade.style.display='block'
+       let textGrade=document.getElementById("textGrade")
+       textGrade.style.display='block'
+      }
     
 
     return (
@@ -77,10 +109,13 @@ function HaveTeam({teamid})
         <input type='text' placeholder='Name of the project' onChange={(evt) => setProjectName(evt.target.value)} />
         <input type='text' placeholder='Project description' onChange={(evt) => setProjectDescription(evt.target.value)} />
         <input type="button" value="Adauga Proiect" onClick={()=>addProject(projectName,projectDescription)} />
+        
         </div>
        <br></br>
-        <input type="button" value="Verifica proiectul selectat pentru tine." onClick={()=>{}} />
-        
+        <input type="button" value="Verifica proiectul selectat pentru tine." onClick={()=>evaluateProject()} />
+        <div id='proiectDeEvaluat'></div>
+        <input  id='textGrade'  type='text' placeholder='Grade:' onChange={function (evt) {setGrade(evt.target.value)}} />
+        <input id='butonGrade' type="button" value="Give grade" onClick={function (){console.log(grade)}} />
         </div>
         
     )

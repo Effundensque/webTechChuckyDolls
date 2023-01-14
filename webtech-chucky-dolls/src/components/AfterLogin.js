@@ -62,9 +62,9 @@ function AfterLogin ({token, userName, userId})
         headers:{
             "Content-Type": "application/json"
         },
-    body: JSON.stringify({
+        body: JSON.stringify({
         teamId:teamid
-    })}
+        })}
     console.log(requestOptions)
         const response = await fetch(`${SERVER}/admin/users/${userid}`,requestOptions)
         const data = await response.json()
