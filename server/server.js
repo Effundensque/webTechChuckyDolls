@@ -10,6 +10,7 @@ const sequelize = require('./db')
 const User = require('./models/users')
 const Team = require('./models/teams')
 const Project = require('./models/projects')
+const { Op } = require('sequelize')
 
 Team.hasMany(User)
 Team.hasMany(Project)
@@ -169,6 +170,17 @@ adminRouter.get('/sync', async (req, res, next) => {
       next(err)
     }
   })
+
+  adminRouter.get('/userss', async (req, res, next) => {
+    try {
+      const users = await User.findAll({
+        attributes: ['username']
+      })
+      res.status(200).json(users)
+    } catch (err) {
+      next(err)
+    }
+  })
   
   adminRouter.post('/users', async (req, res, next) => {
     try {
@@ -227,6 +239,21 @@ adminRouter.get('/sync', async (req, res, next) => {
       next(err)
     }
   })
+
+  adminRouter.delete('/projects/:id', async (req, res, next) => {
+    try {
+      const project = await Project.findByPk(req.params.id)
+      if (project) {
+        await project.destroy()
+        res.status(202).json({ message: 'accepted' })
+      } else {
+        res.status(404).json({ message: 'not found' })
+      }
+    } catch (e) {
+      console.warn(e)
+      res.status(500).json({ message: 'server error' })
+    }
+  })
   
   adminRouter.post('/projects', async (req, res, next) => {
     try {
@@ -241,11 +268,34 @@ adminRouter.get('/sync', async (req, res, next) => {
     try {
       const project = await Project.findByPk(req.params.projectId)
         if (project) {
+          if (req.body.grade1)
           project.grade1 = req.body.grade1
+          if (req.body.grade2)
           project.grade2 = req.body.grade2
+          if (req.body.grade3)
           project.grade3 = req.body.grade3
+          if (req.body.grade4)
           project.grade4 = req.body.grade4
+          if (req.body.grade5)
           project.grade5 = req.body.grade5
+          
+          if (project.grade1 && project.grade2 && project.grade3 && project.grade4 && project.grade5)
+          {
+            console.warn(project.grade1)
+            console.warn(project.grade2)
+            console.warn(project.grade3)
+            console.warn(project.grade4)
+            console.warn(project.grade5)
+            console.warn("--------------------")
+            console.warn(project.grade1+project.grade2+project.grade3+project.grade4+parseInt(project.grade5))
+            console.warn(Math.min(project.grade1,project.grade2,project.grade3,project.grade4,project.grade5))
+            console.warn(Math.max(project.grade1,project.grade2,project.grade3,project.grade4,project.grade5))
+
+            project.finalGrade=((project.grade1+project.grade2+project.grade3+project.grade4+parseInt(project.grade5))-
+            Math.min(project.grade1,project.grade2,project.grade3,project.grade4,project.grade5)-
+            Math.max(project.grade1,project.grade2,project.grade3,project.grade4,project.grade5))/3
+          }
+
           await project.save()
           res.status(202).json({ message: 'User updated!' })
         } else {
@@ -295,7 +345,7 @@ apiRouter.get('/whologgedinID',async (req,res) => {
   })
   if (user)
   {
-    res.status(201).json({message:user.id})
+    res.status(201).json({message:user.id,user})
   }
   else
   {
@@ -344,6 +394,26 @@ adminRouter.get('/projectsTeam', async (req, res, next) => {
       where: {
         teamId:teamId1
       }
+    })
+    res.status(200).json(projects)
+  } catch (err) {
+    next(err)
+  }
+})
+
+adminRouter.get('/projectsTeamEvaluate', async (req, res, next) => {
+  try {
+    const teamId1 = req.headers.auth
+    console.warn("------------------------------------------------------------------" + req.headers.auth)
+    const projects = await Project.findAll({
+      where: { 
+        teamId:{
+          [Op.not]:teamId1
+        },
+        finalGrade:null
+        
+      }
+      
     })
     res.status(200).json(projects)
   } catch (err) {

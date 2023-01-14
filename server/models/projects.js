@@ -31,6 +31,9 @@ const Project = sequelize.define('project', {
     grade5:{
         type: Sequelize.FLOAT
     },
+    finalGrade:{
+        type: Sequelize.FLOAT
+    },
     description:{
         type: Sequelize.STRING
     }
