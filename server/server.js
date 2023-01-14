@@ -11,6 +11,7 @@ const User = require('./models/users')
 const Team = require('./models/teams')
 const Project = require('./models/projects')
 const { Op } = require('sequelize')
+const { min } = require('moment')
 
 Team.hasMany(User)
 Team.hasMany(Project)
@@ -242,11 +243,34 @@ adminRouter.get('/sync', async (req, res, next) => {
     try {
       const project = await Project.findByPk(req.params.projectId)
         if (project) {
+          if (req.body.grade1)
           project.grade1 = req.body.grade1
+          if (req.body.grade2)
           project.grade2 = req.body.grade2
+          if (req.body.grade3)
           project.grade3 = req.body.grade3
+          if (req.body.grade4)
           project.grade4 = req.body.grade4
+          if (req.body.grade5)
           project.grade5 = req.body.grade5
+          
+          if (project.grade1 && project.grade2 && project.grade3 && project.grade4 && project.grade5)
+          {
+            console.warn(project.grade1)
+            console.warn(project.grade2)
+            console.warn(project.grade3)
+            console.warn(project.grade4)
+            console.warn(project.grade5)
+            console.warn("--------------------")
+            console.warn(project.grade1+project.grade2+project.grade3+project.grade4+parseInt(project.grade5))
+            console.warn(Math.min(project.grade1,project.grade2,project.grade3,project.grade4,project.grade5))
+            console.warn(Math.max(project.grade1,project.grade2,project.grade3,project.grade4,project.grade5))
+
+            project.finalGrade=((project.grade1+project.grade2+project.grade3+project.grade4+parseInt(project.grade5))-
+            Math.min(project.grade1,project.grade2,project.grade3,project.grade4,project.grade5)-
+            Math.max(project.grade1,project.grade2,project.grade3,project.grade4,project.grade5))/3
+          }
+
           await project.save()
           res.status(202).json({ message: 'User updated!' })
         } else {
@@ -360,7 +384,8 @@ adminRouter.get('/projectsTeamEvaluate', async (req, res, next) => {
       where: { 
         teamId:{
           [Op.not]:teamId1
-        }
+        },
+        finalGrade:null
         
       }
       

@@ -10,10 +10,12 @@ function HaveTeam({teamid})
 
     const [projectName, setProjectName] = useState('')
     const [projectDescription, setProjectDescription] = useState('')
+
     const [grade, setGrade] = useState('')
+    const [evaluatProjId, setEvaluatProjId] = useState('')
+    const [giveGrade, setGiveGrade] = useState('')
 
     const SERVER = 'http://localhost:8080'
-    var update=1;
 
     async function setTeamName()
     {
@@ -32,10 +34,17 @@ function HaveTeam({teamid})
         let textGrade=document.getElementById("textGrade")
         textGrade.style.display='none'
        
-    },[1])
+    },[])
     useEffect(()=>{
         displayProjects();
     },[projects])
+
+    useEffect(()=>{
+console.log(giveGrade)
+    },[giveGrade])
+
+
+
 
     async function getProjects(){
         const requestOptions = {method: 'GET',headers:{auth:teamid}}
@@ -52,7 +61,7 @@ function HaveTeam({teamid})
         let someText=`<ul>`;
         Object.entries(projects).forEach(([key, value]) => {
             someText+=`<li>`
-             someText += value.projectName + " - "+ value.description;
+             someText += value.projectName + " - "+ value.description +" "+ value.finalGrade;
              someText+=`</li>`
 
         })
@@ -69,33 +78,106 @@ function HaveTeam({teamid})
         getProjects();
       }
 
+      
 
       async function evaluateProject()
       {
         const requestOptions = {method: 'GET',headers:{auth:teamid}}
         const response = await fetch(`${SERVER}/admin/projectsTeamEvaluate`,requestOptions)
         const data = await response.json()
-        console.log(data)
-       console.log(Object.entries(data).length)
-       const project = Math.floor(Math.random() * Object.entries(data).length) + 1;
-       console.log(Object.entries(data)[project-1][1].projectName)
-       console.log(Object.entries(data)[project-1][1].description)
+        
+        console.log(Object.entries(await data).length)
+
+        const project = Math.floor(Math.random() * Object.entries(data).length) + 1;
+
+        console.log("cplm " + Object.entries(data))
+        console.log(Object.entries(data)[project-1][1].id)
+        console.log(Object.entries(data)[project-1][1].projectName)
+        console.log(Object.entries(data)[project-1][1].description) 
+        const projId=Object.entries(data)[project-1][1].id;
+        console.log("Proj id: " + projId)
+        setEvaluatProjId(projId)
+
+        const grade1=Object.entries(data)[project-1][1].grade1
+        const grade2=Object.entries(data)[project-1][1].grade2
+        const grade3=Object.entries(data)[project-1][1].grade3
+        const grade4=Object.entries(data)[project-1][1].grade4
+        const grade5=Object.entries(data)[project-1][1].grade5
+
+        console.log("Grades: " + grade1 +" "+ grade2 +" "+ grade3 +" "+ grade4 +" "+ grade5)
+        let ggrade=""
+        if (grade1==null)
+        ggrade="grade1"
+        else if (grade2==null)
+        ggrade="grade2"
+        else if (grade3==null)
+        ggrade="grade3"
+        else if (grade4==null)
+        ggrade="grade4"
+        else
+        ggrade="grade5"
+        console.log(ggrade)
+        setGiveGrade(ggrade)
+
        let projEval=document.getElementById("proiectDeEvaluat");
-       
-       projEval.innerHTML=`Vei avea de evaluat: <br></br>
-       ${Object.entries(data)[project-1][1].projectName}
-       <br></br>
+       projEval.innerHTML=`Vei avea de evaluat: <b>
+       ${Object.entries(data)[project-1][1].projectName}</b><br></br>
        Description: <br></br>
        ${Object.entries(data)[project-1][1].description}
        <br></br>
-       
        `;
+
        let butonGrade=document.getElementById("butonGrade")
        butonGrade.style.display='block'
        let textGrade=document.getElementById("textGrade")
        textGrade.style.display='block'
+
+        
       }
     
+      async function setDbGrade(grade,evaluatProjId,giveGrade)
+      {
+        console.log("Give grade: " + giveGrade)
+        console.log("grade: " + grade)
+        console.log("evaluatProjId: " + evaluatProjId)
+
+        let config=""
+        if (giveGrade==="grade1")
+        {
+          config = {method: "PUT", 
+          headers: {"Content-Type":"application/json"}, 
+          body: JSON.stringify({grade1:grade})}
+        }else if (giveGrade==="grade2")
+        {
+          config = {method: "PUT", 
+          headers: {"Content-Type":"application/json"}, 
+          body: JSON.stringify({grade2:grade})}
+        }else if (giveGrade==="grade3")
+        {
+          config = {method: "PUT", 
+          headers: {"Content-Type":"application/json"}, 
+          body: JSON.stringify({grade3:grade})}
+        } else if (giveGrade==="grade4")
+        {
+          config = {method: "PUT", 
+          headers: {"Content-Type":"application/json"}, 
+          body: JSON.stringify({grade4:grade})}
+        }else if (giveGrade==="grade5")
+        {
+          config = {method: "PUT", 
+          headers: {"Content-Type":"application/json"}, 
+          body: JSON.stringify({grade5:grade})}
+        }
+        const configh=config;
+        console.log(configh)
+
+        const result = await fetch(`${SERVER}/admin/projects/${evaluatProjId}`,configh)
+        const data = await result.json();
+        console.log(data)
+        
+      }
+        
+
 
     return (
         <div> Bun venit! Faci parte din echipa <b>{teamPart}</b><br></br>
@@ -115,7 +197,7 @@ function HaveTeam({teamid})
         <input type="button" value="Verifica proiectul selectat pentru tine." onClick={()=>evaluateProject()} />
         <div id='proiectDeEvaluat'></div>
         <input  id='textGrade'  type='text' placeholder='Grade:' onChange={function (evt) {setGrade(evt.target.value)}} />
-        <input id='butonGrade' type="button" value="Give grade" onClick={function (){console.log(grade)}} />
+        <input id='butonGrade' type="button" value="Give grade" onClick={function () {setDbGrade(grade,evaluatProjId,giveGrade)} } />
         </div>
         
     )
