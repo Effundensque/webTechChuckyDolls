@@ -11,7 +11,6 @@ const User = require('./models/users')
 const Team = require('./models/teams')
 const Project = require('./models/projects')
 const { Op } = require('sequelize')
-const { min } = require('moment')
 
 Team.hasMany(User)
 Team.hasMany(Project)
@@ -240,6 +239,21 @@ adminRouter.get('/sync', async (req, res, next) => {
       next(err)
     }
   })
+
+  adminRouter.delete('/projects/:id', async (req, res, next) => {
+    try {
+      const project = await Project.findByPk(req.params.id)
+      if (project) {
+        await project.destroy()
+        res.status(202).json({ message: 'accepted' })
+      } else {
+        res.status(404).json({ message: 'not found' })
+      }
+    } catch (e) {
+      console.warn(e)
+      res.status(500).json({ message: 'server error' })
+    }
+  })
   
   adminRouter.post('/projects', async (req, res, next) => {
     try {
@@ -331,7 +345,7 @@ apiRouter.get('/whologgedinID',async (req,res) => {
   })
   if (user)
   {
-    res.status(201).json({message:user.id})
+    res.status(201).json({message:user.id,user})
   }
   else
   {

@@ -2,8 +2,12 @@ import { useEffect, useState } from "react"
 
 
 
-function HaveTeam({teamid})
+function HaveTeam({key, setseed,teamid})
 {
+
+  const reset = () => {
+    setseed(Math.random());
+}
 
     const [teamPart, setTeamPart] = useState('')
     const [projects, setProjects] = useState('')
@@ -35,9 +39,9 @@ function HaveTeam({teamid})
         textGrade.style.display='none'
        
     },[])
-    useEffect(()=>{
-        displayProjects();
-    },[projects])
+    // useEffect(()=>{
+    //     displayProjects();
+    // },[projects])
 
     useEffect(()=>{
 console.log(giveGrade)
@@ -195,6 +199,14 @@ console.log(giveGrade)
         
       }
         
+      async function deleteProject(projId)
+      {
+        const requestOptions = {method: 'DELETE',headers:{"Content-Type":"application/json"}}
+              const response = await fetch(`${SERVER}/admin/projects/${projId}`,requestOptions)
+              const data = await response.json()
+              console.log(data)
+              reset();
+      }
 
 
     return (
@@ -203,7 +215,36 @@ console.log(giveGrade)
 
         <div id='proiects'>
         </div>
-        --------------
+        {/* notes.map(e => (
+            <div key={e.id}>
+              {e.content}
+              <input type='button' value='delete' onClick={() => dispatch(deleteNote(e.id))} />
+            </div>
+          )) 
+          Object.entries(projects).forEach(([key, value]) => {
+            someText+=`<li>`
+             someText += value.projectName
+             if (value.description)
+             someText += " - " + value.description
+             if (value.finalGrade)
+             someText += " <b>Grade:</b> " + value.finalGrade
+             someText+=`</li>`
+
+        })
+          */}
+          {
+            Object.entries(projects).map((e)=>(
+              <ul>
+              <li key={e[1].id}>
+              {e[1].projectName }
+              <input type='button' value='delete' onClick={() => deleteProject(e[1].id)} />
+              <b> - Grade: {e[1].finalGrade} </b>
+            </li>
+              </ul>
+            
+              ))
+          }
+        <hr></hr>
         <br></br>
         <div>
         <input type='text' placeholder='Name of the project' onChange={(evt) => setProjectName(evt.target.value)} />

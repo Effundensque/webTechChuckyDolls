@@ -175,10 +175,14 @@ function AfterLogin ({key,setSeed,token, userName, userId})
             }
     }
 
+    
+
+    const [seed1, setSeed1] =useState(1)
+
     if (iHaveTeam!=='')
     {
         return(
-            <HaveTeam teamid={iHaveTeam}/>
+            <HaveTeam key={seed1} setseed={setSeed1} teamid={iHaveTeam}/>
         )
         
     }else

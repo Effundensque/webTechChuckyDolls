@@ -8,6 +8,7 @@ function App() {
   const [token, setToken] = useState('')
   const [user_name, setUser_Name] = useState('')
   const [user_id, setUser_ID] = useState(1)
+  const[user_role,setUserRole] = useState('')
   const SERVER = 'http://localhost:8080'
   
   async function callApi(){
@@ -24,6 +25,8 @@ function App() {
     
     console.log(data)
     console.log(data1)
+    console.log(data1.user.role)
+    setUserRole(data1.user.role)
     setUser_Name(data.message)
     setUser_ID(data1.message)
     
@@ -40,7 +43,11 @@ function App() {
 
   const [seed, setSeed] = useState(1);
        
-
+if (user_role==="PROF")
+{
+return(<div>Sunt prof</div>)
+}else
+{
   if (token!=='')
   {
     return (<AfterLogin key={seed} setSeed={setSeed} token={token} userName={user_name} userId={user_id}/>)
@@ -57,6 +64,8 @@ function App() {
   
   );
   }
+}
+  
   
 }
 
