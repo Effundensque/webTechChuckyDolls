@@ -199,6 +199,15 @@ console.log(giveGrade)
         const result = await fetch(`${SERVER}/admin/projects/${evaluatProjId}`,configh)
         const data = await result.json();
         console.log(data)
+
+        let proidiv=document.getElementById("proiectDeEvaluat")
+        proidiv.innerHTML=" ";
+        let butonGrade=document.getElementById("butonGrade")
+        butonGrade.style.display='none'
+        let textGrade=document.getElementById("textGrade")
+        textGrade.style.display='none'
+        textGrade.value=""
+
         
       }
         
