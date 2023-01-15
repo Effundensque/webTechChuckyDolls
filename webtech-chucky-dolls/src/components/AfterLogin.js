@@ -47,9 +47,9 @@ function AfterLogin ({key,setSeed,token, userName, userId})
 
     
 
-    useEffect(()=>{
-        displayTeams();
-      },[teams])
+    // useEffect(()=>{
+    //     displayTeams();
+    //   },[teams])
 
     useEffect(()=>{
         setTeamUser(userId, createTeamId)
@@ -103,9 +103,9 @@ function AfterLogin ({key,setSeed,token, userName, userId})
     function displayTeams ()
     {
         let divTeams = document.getElementById("displTeamsDiv");
-        let someText=`<ul>`;
+        let someText=`<ul className="list-group">`;
         Object.entries(teams).forEach(([key, value]) => {
-            someText+=`<li>`
+            someText+=`<li className="list-group-item">`
              someText += value.teamName;
              someText+=`</li>`
 
@@ -142,37 +142,20 @@ function AfterLogin ({key,setSeed,token, userName, userId})
             refreshPage();
         }
     }
-    function selectTeam()
+    function selectTeam(teamSelected)
     {
-        let isTeam = false;
         let teamSelectedId=-1;
         Object.entries(teams).forEach(([key, value]) => {
             if (value.teamName===teamSelected)
             {
-                isTeam=true;
                 teamSelectedId=value.id;
             }
-            
-
         })
-        if (isTeam===false)
-            {
-                let errorTeamDiv= document.getElementById("errorTeam")
-                errorTeamDiv.style.color="red";
-                errorTeamDiv.innerHTML="No such team!"
-            }
-            else
-            {
-                let errorTeamDiv= document.getElementById("errorTeam")
-                errorTeamDiv.innerHTML=''
-                
                 console.log(teamSelected + " cu id: " + teamSelectedId)
                 console.log("Esti logat cu contul: " + userName + " cu id-ul: " + userId)
                 setTeamUser(userId,teamSelectedId)
                 refreshPage();
 
-
-            }
     }
 
     
@@ -189,22 +172,30 @@ function AfterLogin ({key,setSeed,token, userName, userId})
     {
         return(
             <div>
-                <div>Teams: <br></br></div>
-                <div id = 'displTeamsDiv'></div>
-    
-                <br></br>
-                <div>
-                    <div id='selectTeamDiv'>
-                    Choose your team: <div id='errorTeam'></div> <br></br> 
-                    <input type='text' placeholder='type the name of the team' onChange={(evt) => setTeamSelected(evt.target.value)} />
-                    <input type='button' value='Select Team' onClick={() => selectTeam(teamSelected)} />
+                <input className="btn btn-dark mb-3" value="Logout" type="button" onClick={()=>{window.location.reload()}}></input>
+
+                <div className="row">
+                    <h5>Select a team from: </h5>
+                    {
+                    Object.entries(teams).map((e)=>(
+
+                        <ul className="list-group">
+                        <li className="list-group-item list-group-item-action" onClick={() => selectTeam(e[1].teamName)} key={e[1].id}>{e[1].teamName } </li>
+                        </ul>
+                         ))
+                    }
+                </div>
+                <div className="row">
+                <h5>Or create a new team: </h5><div id='errorTeamExists'></div>
+                    <div className="col-3">
+                    <input className="form-control" type='text' placeholder='Name of the team' onChange={(evt) => setCreateTeamName(evt.target.value)} />
+                    
                     </div>
-                    <br></br>
-                    <div id='createTeamDiv'>
-                    Create a new team:<div id='errorTeamExists'></div> <br></br>
-                    <input type='text' placeholder='type the name of the team' onChange={(evt) => setCreateTeamName(evt.target.value)} />
-                    <input type='button' value='Create' onClick={() => createTeam(createTeamName)} />
-                    </div>
+                    <div className="col-1"><input className="btn btn-primary" type='button' value='Create' onClick={() => createTeam(createTeamName)} /></div>
+                    
+                    
+                    
+                    
                 </div>
             </div>
         )

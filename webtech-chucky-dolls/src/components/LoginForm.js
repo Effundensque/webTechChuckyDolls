@@ -86,30 +86,60 @@ function LoginForm ({setToken}) {
     
       return (
         <div>
-          <div>
-          <h3>Login to an existing account:</h3><div id='erroLogin'></div>
-          Username:
-          <input type='text' onChange={(evt) => setUsername(evt.target.value)} />
-          <br></br>
-          Password:
-          <input type='password' onChange={(evt) => setPassword(evt.target.value)} />
-          <br></br>
-          <input type='button' value='Login' onClick={() => mama()} />
+
+          <div className="row">
+            <div className="col">
+            <h4>Login to an existing account:</h4><div id='erroLogin'></div>
+          <div className="row">
+            <div className="col-12">
+              Username: 
+              <input className="form-control" type='text' onChange={(evt) => setUsername(evt.target.value)} />
+            </div>
+            <div className="col-12">
+              Password: 
+              <input className="form-control" type='password' onChange={(evt) => setPassword(evt.target.value)} />
+            </div>
+            <div className="col-12">
+              <input className="btn btn-primary" type='button' value='Login' onClick={() => mama()} />
+            </div>
           </div>
+            </div>
+            <div className="col">
+            <h4>Register a new account:</h4><div id='erroReg'></div>
+          <div className="row">
+              <div className="col">
+                Username:
+                <input className="form-control" type='text' onChange={(evt) => setUsernameReg(evt.target.value)} />
+              </div>
+              <div className="col">
+                Password:
+                <input className="form-control" type='password' onChange={(evt) => setPasswordReg(evt.target.value)} />
+              </div>
+              <div className="col-12">
+                Name:
+                <input className="form-control" type='text' onChange={(evt) => setNameReg(evt.target.value)} />
+              </div>
+              <div className="col-12">
+              <input className="btn btn-primary" type='button' value='Register' onClick={() => register(usernameReg,passwordReg,nameReg)} />
+              </div>
+          </div>
+            </div>
+          </div>
+
+          
+          
+            <hr></hr>
           <div>
           
-          <hr></hr>
-          <h3>Register a new account:</h3><div id='erroReg'></div>
-          Username:
-          <input type='text' onChange={(evt) => setUsernameReg(evt.target.value)} />
+          
+          
+          
           <br></br>
-          Password:
-          <input type='password' onChange={(evt) => setPasswordReg(evt.target.value)} />
+          
           <br></br>
-          Name:
-          <input type='text' onChange={(evt) => setNameReg(evt.target.value)} />
+          
           <br></br>
-          <input type='button' value='Register' onClick={() => register(usernameReg,passwordReg,nameReg)} />
+          
           </div>
           
         </div>
